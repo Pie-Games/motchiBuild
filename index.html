@@ -15,15 +15,6 @@
             display: flex;
             flex-direction: column;
         }
-        #header, #footer {
-            width: 100%;
-            text-align: center;
-            background-color: #20232a; /* Dark color for header/footer */
-            color: white;
-            padding: 10px;
-            position: relative;
-            z-index: 1;
-        }
         #unity-container {
             position: relative;
             width: 100%;
@@ -38,12 +29,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="header"> <!-- Custom header -->
-        <button id="back-button">Back</button>
-        <span>Game Title</span>
-        <button id="menu-button">Menu</button>
-    </div>
-
     <div id="unity-container">
         <canvas id="unity-canvas"></canvas>
         <!-- Unity loading elements -->
@@ -57,43 +42,40 @@
         <div id="unity-footer">
             <div id="unity-webgl-logo"></div>
             <div id="unity-fullscreen-button"></div>
-            <div id="unity-build-title">motchi</div>
+            <div id="unity-build-title">motchiz</div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
 
-        // Example to add functionality to header buttons
-        document.getElementById('back-button').addEventListener('click', () => {
-            tg.close(); // Close the Telegram WebApp
-        });
+        tg.ready(() => {
+            // This function runs once the WebApp is fully loaded
+            tg.expand(); // Expand the web app to fill the screen
 
-        document.getElementById('menu-button').addEventListener('click', () => {
+            // Customize Telegram's Main Button
+            tg.MainButton.text = "Menuz";
             tg.MainButton.show();
-            tg.MainButton.text = "Menu";
-        });
 
-        // Customize the header
-        tg.MainButton.text = "Open Menu";
-        tg.MainButton.show();
-        tg.MainButton.onClick(function() {
-            tg.showPopup({
-                title: "Menu",
-                message: "Select an option:",
-                buttons: [
-                    { id: "1", type: "default", text: "Option 1" },
-                    { id: "2", type: "default", text: "Option 2" }
-                ]
+            tg.MainButton.onClick(function() {
+                tg.showPopup({
+                    title: "Menuz",
+                    message: "Select an option:",
+                    buttons: [
+                        { id: "1", type: "default", text: "Option 1" },
+                        { id: "2", type: "default", text: "Option 2" }
+                    ]
+                });
             });
-        });
 
-        // Optionally add more customization to header
-        tg.HeaderColor = "#000000";  // Change header color
-        tg.BackButton.show(); // Show back button
-        tg.isClosingConfirmationEnabled = true;  // Confirm before closing
+            // Set up Back Button
+            tg.BackButton.show();
+            tg.BackButton.onClick(() => {
+                tg.close(); // Close the Telegram WebApp
+            });
+
+            tg.isClosingConfirmationEnabled = true;  // Enable closing confirmation
+        });
 
         // Unity WebGL setup
         var buildUrl = "Build";
@@ -132,7 +114,7 @@
 
         document.body.appendChild(script);
 
-        // Listen to viewport changes
+        // Handle viewport changes
         tg.onEvent('viewportChanged', () => {
             if (tg.viewportStable) {
                 document.getElementById('unity-container').style.height = tg.viewportHeight + 'px';
