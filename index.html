@@ -27,10 +27,8 @@
             height: 100%;
         }
     </style>
+    <!-- Include the Telegram Web Apps JavaScript API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        window.Telegram.WebApp.ready();
-    </script>
 </head>
 <body>
 <div id="unity-container" class="unity-desktop">
@@ -49,6 +47,9 @@
     </div>
 </div>
 <script>
+    // Initialize the Telegram Web App API
+    window.Telegram.WebApp.ready();
+
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
     var loadingBar = document.querySelector("#unity-loading-bar");
@@ -90,8 +91,6 @@
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
-        // Optionally lower canvas resolution on mobile devices for performance
-        // config.devicePixelRatio = 1;
     } else {
         canvas.style.width = "100%";
         canvas.style.height = "100%";
@@ -115,7 +114,6 @@
     };
 
     document.body.appendChild(script);
-
 </script>
 </body>
 </html>
