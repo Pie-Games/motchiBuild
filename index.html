@@ -15,15 +15,6 @@
             display: flex;
             flex-direction: column;
         }
-        #header, #footer {
-            width: 100%;
-            text-align: center;
-            background-color: #20232a; /* Dark color for header/footer */
-            color: white;
-            padding: 10px;
-            position: relative;
-            z-index: 1;
-        }
         #unity-container {
             position: relative;
             width: 100%;
@@ -34,19 +25,24 @@
             width: 100%;
             height: 100%;
         }
+        #change-color-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+        }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="header"> <!-- Custom header -->
-        <button id="back-button">Back</button>
-        <span>Game Title</span>
-        <button id="menu-button">Menu</button>
-    </div>
+    <!-- Add a simple button for testing -->
+    <button id="change-color-button" onclick="changeBackgroundColor()">Change Background Color</button>
 
     <div id="unity-container">
         <canvas id="unity-canvas"></canvas>
-        <!-- Unity loading elements -->
         <div id="unity-loading-bar">
             <div id="unity-logo"></div>
             <div id="unity-progress-bar-empty">
@@ -66,17 +62,11 @@
         tg.ready();
         tg.expand();
 
-        // Example to add functionality to header buttons
-        document.getElementById('back-button').addEventListener('click', () => {
-            tg.close(); // Close the Telegram WebApp
-        });
+        // Function to change the background color of the body
+        function changeBackgroundColor() {
+            document.body.style.backgroundColor = document.body.style.backgroundColor === 'blue' ? 'white' : 'blue';
+        }
 
-        document.getElementById('menu-button').addEventListener('click', () => {
-            tg.MainButton.show();
-            tg.MainButton.text = "Menu";
-        });
-
-        // Unity WebGL setup
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/motchiBuild.loader.js";
         var config = {
@@ -91,12 +81,14 @@
         };
 
         function unityShowBanner(msg, type) {
-            // Custom function to handle Unity messages
-        }
-
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-            document.getElementById("unity-container").className = "unity-mobile";
-            document.getElementById("unity-canvas").className = "unity-mobile";
+            var div = document.createElement('div');
+            div.innerHTML = msg;
+            document.getElementById('unity-warning').appendChild(div);
+            if (type == 'error') div.style = 'background: red; padding: 10px;';
+            else if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+            setTimeout(function () {
+                document.getElementById('unity-warning').removeChild(div);
+            }, 5000);
         }
 
         var script = document.createElement("script");
@@ -112,13 +104,6 @@
         };
 
         document.body.appendChild(script);
-
-        // Listen to viewport changes
-        tg.onEvent('viewportChanged', () => {
-            if (tg.viewportStable) {
-                document.getElementById('unity-container').style.height = tg.viewportHeight + 'px';
-            }
-        });
     </script>
 </body>
 </html>
