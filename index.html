@@ -3,16 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Business Simulator</title>
+    <title>Unity WebGL Player | motchi</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
     <style>
         body, html {
             margin: 0;
             padding: 0;
+            overflow: hidden;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Allow swipe gestures */
         }
         #unity-container {
             position: absolute;
@@ -26,20 +27,53 @@
             height: 100%;
         }
     </style>
-    <!-- Include Telegram Web Apps API -->
+    <!-- Include the Telegram Web Apps JavaScript API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 <div id="unity-container" class="unity-desktop">
     <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+        </div>
+    </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">motchi</div>
+    </div>
 </div>
 <script>
     // Initialize the Telegram Web App API
     window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand(); // Expands the mini app within Telegram
 
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+    var warningBanner = document.querySelector("#unity-warning");
+
+    function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+            warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+            if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+            setTimeout(function () {
+                warningBanner.removeChild(div);
+                updateBannerVisibility();
+            }, 5000);
+        }
+        updateBannerVisibility();
+    }
 
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/motchiBuild.loader.js";
@@ -49,8 +83,9 @@
         codeUrl: buildUrl + "/motchiBuild.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "Business Simulator",
+        productName: "motchi",
         productVersion: "1.0",
+        showBanner: unityShowBanner,
     };
 
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
@@ -61,13 +96,18 @@
         canvas.style.height = "100%";
     }
 
+    loadingBar.style.display = "block";
+
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-            console.log(`Loading progress: ${progress * 100}%`);
+            progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
-            console.log("Unity instance created successfully.");
+            loadingBar.style.display = "none";
+            fullscreenButton.onclick = () => {
+                unityInstance.SetFullscreen(1);
+            };
         }).catch((message) => {
             alert(message);
         });
