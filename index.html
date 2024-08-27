@@ -76,6 +76,25 @@
             tg.MainButton.text = "Menu";
         });
 
+        // Customize the header
+        tg.MainButton.text = "Open Menu";
+        tg.MainButton.show();
+        tg.MainButton.onClick(function() {
+            tg.showPopup({
+                title: "Menu",
+                message: "Select an option:",
+                buttons: [
+                    { id: "1", type: "default", text: "Option 1" },
+                    { id: "2", type: "default", text: "Option 2" }
+                ]
+            });
+        });
+
+        // Optionally add more customization to header
+        tg.HeaderColor = "#000000";  // Change header color
+        tg.BackButton.show(); // Show back button
+        tg.isClosingConfirmationEnabled = true;  // Confirm before closing
+
         // Unity WebGL setup
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/motchiBuild.loader.js";
