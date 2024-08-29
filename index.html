@@ -28,27 +28,26 @@
         }
     </style>
     <script>
-        // Function to notify Telegram that the app is ready and to expand it
-        function notifyTelegramAppReady() {
-            console.log("Notifying Telegram that app is ready...");
+        // Function to expand the Mini App on mobile and web environments
+        function expandMiniApp() {
+            console.log("Expanding Mini App...");
 
-            const readyData = JSON.stringify({
-                eventType: 'web_app_ready',
-                eventData: {} // No additional data needed for ready
-            });
-            window.parent.postMessage(readyData, 'https://web.telegram.org'); // Ensure correct origin
-
-            console.log("Requesting Telegram to expand the app...");
-            const expandData = JSON.stringify({
-                eventType: 'web_app_expand',
-                eventData: {} // No additional data needed for expansion
-            });
-            window.parent.postMessage(expandData, 'https://web.telegram.org');
+            if (window.TelegramWebviewProxy) {
+                // For mobile and desktop clients
+                window.TelegramWebviewProxy.postEvent('web_app_expand', JSON.stringify({}));
+            } else if (window.parent) {
+                // For web client
+                const data = JSON.stringify({
+                    eventType: 'web_app_expand',
+                    eventData: {}
+                });
+                window.parent.postMessage(data, 'https://web.telegram.org');
+            }
         }
 
-        // Delay the expand call to ensure full load
+        // Call the function after the page is fully loaded
         window.addEventListener('load', function() {
-            setTimeout(notifyTelegramAppReady, 1000); // Adding a delay to ensure complete loading
+            setTimeout(expandMiniApp, 1000); // Delay to ensure everything is fully loaded
         });
     </script>
 </head>
