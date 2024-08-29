@@ -28,17 +28,28 @@
         }
     </style>
     <script>
-        // Function to expand the Mini App
-        function expandMiniApp() {
-            const data = JSON.stringify({
+        // Function to notify Telegram that the app is ready and to expand it
+        function notifyTelegramAppReady() {
+            console.log("Notifying Telegram that app is ready...");
+
+            const readyData = JSON.stringify({
+                eventType: 'web_app_ready',
+                eventData: {} // No additional data needed for ready
+            });
+            window.parent.postMessage(readyData, 'https://web.telegram.org'); // Ensure correct origin
+
+            console.log("Requesting Telegram to expand the app...");
+            const expandData = JSON.stringify({
                 eventType: 'web_app_expand',
                 eventData: {} // No additional data needed for expansion
             });
-            window.parent.postMessage(data, 'https://web.telegram.org'); // Use the appropriate origin for security
+            window.parent.postMessage(expandData, 'https://web.telegram.org');
         }
 
-        // Call the function once the document is fully loaded
-        document.addEventListener('DOMContentLoaded', expandMiniApp);
+        // Delay the expand call to ensure full load
+        window.addEventListener('load', function() {
+            setTimeout(notifyTelegramAppReady, 1000); // Adding a delay to ensure complete loading
+        });
     </script>
 </head>
 <body>
@@ -116,9 +127,6 @@
             fullscreenButton.onclick = () => {
                 unityInstance.SetFullscreen(1);
             };
-
-            // Call expandMiniApp again after Unity is fully loaded (if necessary)
-            expandMiniApp();
         }).catch((message) => {
             alert(message);
         });
