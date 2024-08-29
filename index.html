@@ -28,6 +28,8 @@
         }
     </style>
     <script>
+                        window.Telegram.WebApp.expand();
+                        
         // Function to expand the Mini App on mobile and web environments
         function expandMiniApp() {
             console.log("Expanding Mini App...");
@@ -35,6 +37,7 @@
             if (window.TelegramWebviewProxy) {
                 // For mobile and desktop clients
                 window.TelegramWebviewProxy.postEvent('web_app_expand', JSON.stringify({}));
+                window.Telegram.WebApp.expand();
             } else if (window.parent) {
                 // For web client
                 const data = JSON.stringify({
