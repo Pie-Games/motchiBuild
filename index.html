@@ -27,9 +27,13 @@
             height: 100%;
         }
     </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-                        window.Telegram.WebApp.expand();
-                        
+        window
+  .TelegramWebviewProxy
+  .postEvent('web_app_expand');
+
+        window.Telegram.WebApp.expand();
         // Function to expand the Mini App on mobile and web environments
         function expandMiniApp() {
             console.log("Expanding Mini App...");
@@ -44,7 +48,7 @@
                     eventType: 'web_app_expand',
                     eventData: {}
                 });
-                window.parent.postMessage(data, 'https://web.telegram.org');
+                window.parent.postEvent('web_app_expand');
             }
         }
 
