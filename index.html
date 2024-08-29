@@ -26,24 +26,31 @@
             width: 100%;
             height: 100%;
         }
+        /* Custom overlay styling */
+        #custom-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Change this color to your desired overlay color */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            z-index: 9999; /* Ensures the overlay is on top of everything else */
+        }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        window
-  .TelegramWebviewProxy
-  .postEvent('web_app_expand');
-
         window.Telegram.WebApp.expand();
-        // Function to expand the Mini App on mobile and web environments
         function expandMiniApp() {
             console.log("Expanding Mini App...");
-
             if (window.TelegramWebviewProxy) {
-                // For mobile and desktop clients
                 window.TelegramWebviewProxy.postEvent('web_app_expand', JSON.stringify({}));
                 window.Telegram.WebApp.expand();
             } else if (window.parent) {
-                // For web client
                 const data = JSON.stringify({
                     eventType: 'web_app_expand',
                     eventData: {}
@@ -51,10 +58,8 @@
                 window.parent.postEvent('web_app_expand');
             }
         }
-
-        // Call the function after the page is fully loaded
         window.addEventListener('load', function() {
-            setTimeout(expandMiniApp, 1000); // Delay to ensure everything is fully loaded
+            setTimeout(expandMiniApp, 10); 
         });
     </script>
 </head>
@@ -74,6 +79,9 @@
         <div id="unity-build-title">motchi</div>
     </div>
 </div>
+<!-- Custom overlay div -->
+<div id="custom-overlay">Loading...</div>
+
 <script>
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");
@@ -127,12 +135,15 @@
     script.src = loaderUrl;
     script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-            progressBarFull.style.width = 100 * progress + "%";
+            progressBarFull.style.width = 100 * progress + "%"; 
         }).then((unityInstance) => {
             loadingBar.style.display = "none";
             fullscreenButton.onclick = () => {
                 unityInstance.SetFullscreen(1);
             };
+            // Hide custom overlay when Unity content is loaded
+            var customOverlay = document.getElementById("custom-overlay");
+            customOverlay.style.display = "none";
         }).catch((message) => {
             alert(message);
         });
