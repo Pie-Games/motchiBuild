@@ -40,6 +40,7 @@
             align-items: center;
             font-size: 2em;
             z-index: 9999; /* Ensures the overlay is on top of everything else */
+            display: none; /* Initially hidden */
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -89,6 +90,7 @@
     var progressBarFull = document.querySelector("#unity-progress-bar-full");
     var fullscreenButton = document.querySelector("#unity-fullscreen-button");
     var warningBanner = document.querySelector("#unity-warning");
+    var customOverlay = document.getElementById("custom-overlay");
 
     function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
@@ -141,9 +143,12 @@
             fullscreenButton.onclick = () => {
                 unityInstance.SetFullscreen(1);
             };
-            // Hide custom overlay when Unity content is loaded
-            var customOverlay = document.getElementById("custom-overlay");
-            customOverlay.style.display = "none";
+
+            // Show the custom overlay for exactly 2 seconds
+            customOverlay.style.display = "flex"; // Show overlay
+            setTimeout(() => {
+                customOverlay.style.display = "none"; // Hide overlay after 2 seconds
+            }, 2000);
         }).catch((message) => {
             alert(message);
         });
