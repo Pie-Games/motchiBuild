@@ -27,8 +27,8 @@
             height: 100%;
         }
     </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // Function to expand the Mini App
         function expandMiniApp() {
             const data = JSON.stringify({
                 eventType: 'web_app_expand',
@@ -37,6 +37,7 @@
             window.parent.postMessage(data, 'https://web.telegram.org'); // Use the appropriate origin for security
         }
 
+        // Call the function once the document is fully loaded
         document.addEventListener('DOMContentLoaded', expandMiniApp);
     </script>
 </head>
@@ -115,6 +116,9 @@
             fullscreenButton.onclick = () => {
                 unityInstance.SetFullscreen(1);
             };
+
+            // Call expandMiniApp again after Unity is fully loaded (if necessary)
+            expandMiniApp();
         }).catch((message) => {
             alert(message);
         });
