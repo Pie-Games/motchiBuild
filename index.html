@@ -29,9 +29,15 @@
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        Telegram.WebApp.ready(function() {
-            Telegram.WebApp.expand();
-        });
+        function expandMiniApp() {
+            const data = JSON.stringify({
+                eventType: 'web_app_expand',
+                eventData: {} // No additional data needed for expansion
+            });
+            window.parent.postMessage(data, 'https://web.telegram.org'); // Use the appropriate origin for security
+        }
+
+        document.addEventListener('DOMContentLoaded', expandMiniApp);
     </script>
 </head>
 <body>
