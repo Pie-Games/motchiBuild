@@ -136,13 +136,13 @@
              unityInstance.SetFullscreen(1);
          };
 
-         console.log(typeof GetTelegramInitData); // Check if function is available
+        // console.log(typeof GetTelegramInitData); // Check if function is available
          // Call GetTelegramInitData from the .jslib script to retrieve initData
-         if (typeof GetTelegramInitData === "function") {
-             GetTelegramInitData(); // This will send initData to Unity
-         } else {
-             console.error("GetTelegramInitData function not defined.");
-         }
+         //if (typeof GetTelegramInitData === "function") {
+         //    GetTelegramInitData(); // This will send initData to Unity
+        // } else {
+        //     console.error("GetTelegramInitData function not defined.");
+        // }
 
          // Show the custom overlay for exactly 2 seconds
          customOverlay.style.display = "flex"; // Show overlay
