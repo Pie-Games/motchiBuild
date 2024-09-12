@@ -127,31 +127,24 @@
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
-     createUnityInstance(canvas, config, (progress) => {
-         progressBarFull.style.width = 100 * progress + "%"; 
-     }).then((unityInstance) => {
-         myGameInstance = unityInstance; // Ensure myGameInstance is set globally
-         loadingBar.style.display = "none";
-         fullscreenButton.onclick = () => {
-             unityInstance.SetFullscreen(1);
-         };
+    createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%"; 
+    }).then((unityInstance) => {
+        myGameInstance = unityInstance;
 
-         console.log(typeof GetTelegramInitData); // Check if function is available
-         // Call GetTelegramInitData from the .jslib script to retrieve initData
-         if (typeof GetTelegramInitData === "function") {
-             GetTelegramInitData(); // This will send initData to Unity
-         } else {
-             console.error("GetTelegramInitData function not defined.");
-         }
+        // Debugging statement to check if the function is available
+        console.log("Type of GetTelegramInitData:", typeof GetTelegramInitData);
 
-         // Show the custom overlay for exactly 2 seconds
-         customOverlay.style.display = "flex"; // Show overlay
-         setTimeout(() => {
-             customOverlay.style.display = "none"; // Hide overlay after 2 seconds
-         }, 2000);
-     }).catch((message) => {
-         alert(message);
-     });
+        if (typeof GetTelegramInitData === "function") {
+            GetTelegramInitData(); // Should send initData to Unity
+        } else {
+            console.error("GetTelegramInitData function not defined.");
+        }
+    }).catch((message) => {
+        alert(message);
+    });
+};
+
  };
 
 
