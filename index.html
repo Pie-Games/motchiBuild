@@ -139,21 +139,21 @@
         createUnityInstance(canvas, config, (progress) => {
     progressBarFull.style.width = 100 * progress + "%";
 }).then((unityInstance) => {
-    myGameInstance = unityInstance; // Ensure myGameInstance is set globally
+    window.myGameInstance = unityInstance; // Make it globally accessible
     loadingBar.style.display = "none";
-            fullscreenButton.onclick = () => {
-                unityInstance.SetFullscreen(1);
-            };
-
-            // Show the custom overlay for exactly 2 seconds
-            customOverlay.style.display = "flex"; // Show overlay
-            setTimeout(() => {
-                customOverlay.style.display = "none"; // Hide overlay after 2 seconds
-            }, 2000);
-        }).catch((message) => {
-            alert(message);
-        });
+    
+    fullscreenButton.onclick = () => {
+        unityInstance.SetFullscreen(1);
     };
+
+    customOverlay.style.display = "flex";
+    setTimeout(() => {
+        customOverlay.style.display = "none";
+    }, 2000);
+}).catch((message) => {
+    alert(message);
+});
+    }
 
     document.body.appendChild(script);
 </script>
