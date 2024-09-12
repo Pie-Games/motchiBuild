@@ -133,13 +133,15 @@
 
     loadingBar.style.display = "block";
 
+    var myGameInstance = null;
+
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
     progressBarFull.style.width = 100 * progress + "%";
 }).then((unityInstance) => {
-    window.myGameInstance = unityInstance; // Make it globally accessible
+    myGameInstance = unityInstance; // Make it globally accessible
     loadingBar.style.display = "none";
     
     fullscreenButton.onclick = () => {
