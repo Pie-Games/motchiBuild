@@ -1,9 +1,8 @@
 name: Deploy static content to Pages
 
 on:
-  # Trigger the workflow on pushes to 'main' and 'test_build' branches
   push:
-    branches: 
+    branches:
       - "main"
       - "test_build"
   workflow_dispatch:
@@ -33,16 +32,16 @@ jobs:
           if [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DEPLOY_PATH='/'" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "test_build" ]]; then
+            mkdir test
+            mv * test/
             echo "DEPLOY_PATH='/test'" >> $GITHUB_ENV
           fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
