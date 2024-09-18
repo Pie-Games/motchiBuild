@@ -26,21 +26,23 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Set deployment path based on branch
-        id: set-path
+      - name: Move test build to /test folder
+        if: github.ref_name == 'test_build'
         run: |
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "DEPLOY_PATH='/'" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "test_build" ]]; then
-            mkdir test
-            mv * test/
-            echo "DEPLOY_PATH='/test'" >> $GITHUB_ENV
-          fi
+          mkdir -p test
+          mv Build StreamingAssets TemplateData index.html test/
 
-      - name: Upload artifact
+      - name: Upload production artifact
+        if: github.ref_name == 'main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
+      - name: Upload test artifact
+        if: github.ref_name == 'test_build'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'test'
 
       - name: Deploy to GitHub Pages
         id: deployment
