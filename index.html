@@ -55,9 +55,9 @@
     top: 33%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 150px; /* Adjust size as needed */
+    width: 150px;
     z-index: 10000;
-    animation: spin 1s linear infinite;
+    animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
@@ -65,7 +65,7 @@
         transform: translate(-50%, -50%) rotate(0deg);
     }
     to {
-        transform: translate(-50%, -50%) rotate(360deg);
+        transform: translate(-50%, -50%) rotate(-360deg); /* Reverse direction */
     }
 }
 
