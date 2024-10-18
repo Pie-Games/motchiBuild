@@ -14,6 +14,8 @@
             overflow: hidden;
             width: 100%;
             height: 100%;
+            background-color: #000;
+            color-scheme: only light;
         }
         #unity-container {
             position: absolute;
@@ -21,27 +23,67 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background-color: #000;
         }
         canvas {
             width: 100%;
             height: 100%;
+            background-color: #000;
         }
-        /* Custom overlay styling */
-        #custom-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000; /* Change this color to your desired overlay color */
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            z-index: 9999; /* Ensures the overlay is on top of everything else */
-            display: none; /* Initially hidden */
-        }
+        #unity-loading-bar {
+    background-color: black;
+}
+    #custom-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;
+        z-index: 9999;
+        display: none; /* Initially hidden */
+    }
+
+        /* Spinning animation for truck PNG */
+#spinning-truck {
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px; /* Adjust size as needed */
+    z-index: 10000;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Loader text */
+#loader-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2em;
+    text-align: center;
+    z-index: 10000;
+}
+
+#unity-logo {
+    display: none !important;
+}
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
@@ -81,7 +123,17 @@
     </div>
 </div>
 <!-- Custom overlay div -->
-<div id="custom-overlay">Loading...</div>
+<div id="custom-overlay">
+    <!--<img id="truck-icon" src="TemplateData/TRUCK_Icon.png" alt="Truck Icon">-->
+</div>
+
+    <!-- Spinning truck PNG image -->
+<img id="spinning-truck" src="TemplateData/TRUCK_Icon.png" alt="Spinning Truck Icon">
+<!-- Loader text -->
+<div id="loader-text">
+    Первая загрузка всегда дольше 🐌
+</div>
+
 
 <script>
     var container = document.querySelector("#unity-container");
@@ -91,6 +143,8 @@
     var fullscreenButton = document.querySelector("#unity-fullscreen-button");
     var warningBanner = document.querySelector("#unity-warning");
     var customOverlay = document.getElementById("custom-overlay");
+    var spinningTruck = document.getElementById("spinning-truck");
+    var loadingText = document.getElementById("loader-text");
 
     function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
@@ -131,27 +185,29 @@
         canvas.style.height = "100%";
     }
 
-    loadingBar.style.display = "block";
+loadingBar.style.display = "block";
 
-    var myGameInstance = null;
+var myGameInstance = null;
 
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-    progressBarFull.style.width = 100 * progress + "%";
-}).then((unityInstance) => {
+var script = document.createElement("script");
+script.src = loaderUrl;
+script.onload = () => {
+    createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+    }).then((unityInstance) => {
     myGameInstance = unityInstance; // Make it globally accessible
-    loadingBar.style.display = "none";
     
     fullscreenButton.onclick = () => {
         unityInstance.SetFullscreen(1);
     };
-
+    loadingText.style.display = "none";
     customOverlay.style.display = "flex";
+    
     setTimeout(() => {
+        loadingBar.style.display = "none";
+        spinningTruck.style.display = "none";
         customOverlay.style.display = "none";
-    }, 2500);
+    }, 2100);
 }).catch((message) => {
     alert(message);
 });
