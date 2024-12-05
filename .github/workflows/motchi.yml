@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "main"
-      - "test_build"
   workflow_dispatch:
 
 permissions:
@@ -26,24 +25,33 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Move test build to /test folder
-        if: github.ref_name == 'test_build'
-        run: |
-          mkdir -p test
-          mv Build StreamingAssets TemplateData index.html test/
-
       - name: Upload production artifact
         if: github.ref_name == 'main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
-      - name: Upload test artifact
-        if: github.ref_name == 'test_build'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'test'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # Passing data to Digital Ocean
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          cp .github/known_hosts ~/.ssh/known_hosts
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Add Cache-Busting Version
+        run: |
+          TIMESTAMP=$(date +%s)
+          sed -i "s/UnityLoader.js.*/UnityLoader.js?v=$TIMESTAMP/" ./Data/index.html
+          sed -i "s/style.css.*/style.css?v=$TIMESTAMP/" ./Data/index.html
+
+      - name: Deploy files to server
+        run: |
+          rsync -avz --delete ./Data/ root@164.92.253.209:/var/www/biztycoongame
