@@ -169,7 +169,7 @@
             var initDataJson = JSON.stringify(initDataObj);
             
             // console.log("--------------------------");
-            console.log("Init data json: ", initDataJson);
+            // console.log("Init data json: ", initDataJson);
             // console.log("--------------------------");
 
             if (initDataJson === undefined) {
@@ -193,7 +193,7 @@
                     })
                     .then(data => {
                         userToken = data.token;
-                        console.log("User token: ", userToken);
+                        // console.log("User token: ", userToken);
                         unityTokenReady = true;
                         if (callback) callback(null, data);
                     })
