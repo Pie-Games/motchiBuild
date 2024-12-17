@@ -18,7 +18,9 @@
     <type fullname="StallManufacturerChickenSpine" preserve="all" />
     <type fullname="StallManufacturerController" preserve="all" />
     <type fullname="StallManufacturerJuicerSpine" preserve="all" />
+    <type fullname="StallManufacturerLunchBoxSpine" preserve="all" />
     <type fullname="StallManufacturerMillSpine" preserve="all" />
+    <type fullname="StallManufacturerPizzaSpine" preserve="all" />
     <type fullname="StallManufacturerView" preserve="all" />
     <type fullname="StallQueue" preserve="all" />
     <type fullname="StallStockController" preserve="all" />
