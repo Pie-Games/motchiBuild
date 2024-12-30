@@ -9,6 +9,22 @@ html {
     font-family: 'RifficFreeBold', sans-serif;
 }
 
+@supports (-webkit-touch-callout: none) {
+
+    input[type="text"],
+    textarea {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        transform: translate(-9999px, -9999px);
+        z-index: 1000;
+        pointer-events: auto;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+    }
+}
+
 #characted-background {
     display: flex;
     justify-content: center;
