@@ -22,14 +22,40 @@
         });
     </script>
 
+    <!-- Analytics initialization -->
+    <script>
+        const analyticsScript = document.createElement('script');
+        analyticsScript.src = "https://tganalytics.xyz/index.js";
+        analyticsScript.async = true;
+
+        analyticsScript.onload = () => {
+            telegramAnalytics.init({
+                token: 'eyJhcHBfbmFtZSI6IkJpelR5Y29vbiIsImFwcF91cmwiOiJodHRwcy8vdC5tZS9iaXp0eWNvb25fYm90IiwiYXBwX2RvbWFpbiI6Imh0dHBzOi8vYml6dHljb29uZ2FtZS5jb20vIn0=!fQGzXhnIbt6QG8Zgh4xgORjCUO2+qcWCiSbinwo+4Vg=',
+                appName: 'BizTycoon',
+            });
+        };
+
+        document.head.appendChild(analyticsScript);
+    </script>
+
     <!-- Telegram init -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        // if (isMobile) {
+        //     console.log("Mobile device detected");
+        // } else {
+        //     console.log("Desktop device detected");
+        // }
+
         window.Telegram.WebApp.expand();
         function expandMiniApp() {
             console.log("Expanding Mini App...");
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_expand', JSON.stringify({}));
+                // if (isMobile)
+                //     window.TelegramWebviewProxy.postEvent('web_app_request_fullscreen', JSON.stringify({}));
                 window.Telegram.WebApp.expand();
             } else if (window.parent) {
                 const data = JSON.stringify({
@@ -37,6 +63,8 @@
                     eventData: {}
                 });
                 window.parent.postEvent('web_app_expand');
+                // if (isMobile)
+                //     window.parent.postEvent('web_app_request_fullscreen');
             }
         }
 
