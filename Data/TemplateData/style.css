@@ -5,9 +5,28 @@ html {
     overflow: hidden;
     width: 100%;
     height: 100%;
+    position: fixed;
     background-color: #000;
     font-family: 'RifficFreeBold', sans-serif;
+    overscroll-behavior: none;
 }
+
+#back-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* Fill the entire space, cropping if necessary */
+    object-position: bottom center; /* Prioritize cropping from the bottom if needed */
+    z-index: -1;                /* Ensure it stays behind other content */
+}
+
+/* Make it invisible after  */
+/* ton-connect {
+    display: none !important;
+    visibility: hidden;
+} */
 
 @supports (-webkit-touch-callout: none) {
 
@@ -35,19 +54,23 @@ html {
 }
 
 #character-container {
-    display: flex;
+    position: absolute;          /* Position it relative to the viewport */
+    bottom: 40px;                /* Distance from the bottom of the screen */
+    left: 50%;                   /* Center horizontally */
+    transform: translateX(-50%); /* Perfectly center the container */
+    display: flex;               /* Align sprites horizontally */
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
-  }
+    z-index: 2;                  /* Ensure it's above the background */
+}
 
-  .character-sprite {
+.character-sprite {
     position: absolute;
     width: 40%;
     height: auto;
     z-index: 2;
     animation: walk-animation 1s steps(4) infinite;
-  }
+}
 
 .loading-text-sprite {
     width: 200px;
@@ -104,16 +127,37 @@ html {
 }
 
 #unity-loading-bar {
-    position: absolute;
+    position: absolute;  /* Acts as the reference point */
+    width: 200px;        /* Set desired width */
+    height: auto;        /* Adjust based on image ratio */
+    margin: 0 auto;      /* Center horizontally */
+    bottom: 20px;                
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    text-align: center;
+    transform: translateX(-50%);
+    display: flex;               
+    justify-content: center;
+    align-items: center;
+    z-index: 2;            
+}
+
+#unity-progress-bar-empty {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#unity-progress-bar-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;           
+    height: 100%;
+    /* object-fit: cover; */
+    transition: width 0.3s ease;
 }
 
 #custom-overlay {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -127,13 +171,14 @@ html {
 }
 
 #unity-container {
-    position: relative;
+    position: fixed;
     width: 100%;
     height: 100vh;
-    display: flex;
+    display: block;
     justify-content: center;
     align-items: center;
     background-color: #000;
+    overflow: hidden;
 }
 
 #unity-container.unity-desktop {
@@ -159,23 +204,6 @@ html {
 
 #unity-logo {
     display: none !important;
-}
-
-#unity-progress-bar-empty {
-    width: 141px;
-    height: 18px;
-    margin-top: 10px;
-    margin-left: 6.5px;
-    background: url('progress-bar-empty-dark.png') no-repeat center;
-    display: none;
-}
-
-#unity-progress-bar-full {
-    width: 0%;
-    height: 18px;
-    margin-top: 10px;
-    background: url('progress-bar-full-dark.png') no-repeat center;
-    display: none;
 }
 
 #unity-footer {

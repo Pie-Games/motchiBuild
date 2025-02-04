@@ -76,24 +76,14 @@
 
 <!-- Loading screen body -->
 <body>
-    <div id="custom-overlay">
-        <div id="character-container" style="margin-bottom: 50px;"></div>
-        <div id="character-container">
-            <img id="characted-background" src="TemplateData/LoadingScreen/CIRCLE_.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_1.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_2.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_3.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_4A.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_1.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_2.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_3.png">
-            <img class="character-sprite" src="TemplateData/LoadingScreen/WALK_4B.png">
-        </div>
-        <div id="load-text">
-            Loading
-        </div>
-        <div id="character-container">
-            <img class="spinning-load-sprite" src="TemplateData/LoadingScreen/CIRCLE_Money_.png">
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
+    </div>
+    <div id="custom-overlay"> 
+        <img id="back-image" src="TemplateData/LoadingScreen/Cover.png">
+        <div id="unity-loading-bar">
+            <img id="unity-progress-bar-empty" src="TemplateData/LoadingScreen/SLOT.png">
+            <img id="unity-progress-bar-full" src="TemplateData/LoadingScreen/Fill.png">
         </div>
         <div id="character-container">
             <img class="loading-text-sprite" src="TemplateData/LoadingScreen/LOADING_0.png">
@@ -102,9 +92,6 @@
             <img class="loading-text-sprite" src="TemplateData/LoadingScreen/LOADING_3.png">
         </div>
     </div>
-    <div id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas" tabindex="-1"></canvas>
-    </div>
 
     <!-- Script part -->
     <script>
@@ -112,41 +99,42 @@
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-canvas");
         var customOverlay = document.getElementById("custom-overlay");
-        var characterBackground = document.getElementById("characted-background");
-        var characterSprites = document.querySelectorAll('.character-sprite');
-        var loadingHint = document.getElementById('load-text');
         var loadingTextSprites = document.querySelectorAll('.loading-text-sprite');
+        var progressBarFull = document.querySelector("#unity-progress-bar-full");
+        // var characterBackground = document.getElementById("characted-background");
+        // var characterSprites = document.querySelectorAll('.character-sprite');
+        // var loadingHint = document.getElementById('load-text');
 
         // Animating text update
-        const phrases = [
-            "Earning 10 000 bucks earns you 1 $BIZTY coin",
-            "Improve objects and workers to increase your income",
-            "Don't forget to collect passive income daily",
-            "The more expensive the resources are, the more income you get",
-            "Workers can get tired, walk up to them to wake them up",
-            "Buildings break down from time to time, go over to fix them",
-            "Open new businesses to generate even more income",
-            "Tops in the leagues get rewards every day",
-            "Businesses continue to generate passive income while you're in the game",
-            "For every friend you invite, you will receive a reward and earn a percentage of their income"
-        ];
+        // const phrases = [
+        //     "Earning 10 000 bucks earns you 1 $BIZTY coin",
+        //     "Improve objects and workers to increase your income",
+        //     "Don't forget to collect passive income daily",
+        //     "The more expensive the resources are, the more income you get",
+        //     "Workers can get tired, walk up to them to wake them up",
+        //     "Buildings break down from time to time, go over to fix them",
+        //     "Open new businesses to generate even more income",
+        //     "Tops in the leagues get rewards every day",
+        //     "Businesses continue to generate passive income while you're in the game",
+        //     "For every friend you invite, you will receive a reward and earn a percentage of their income"
+        // ];
 
-        let textIndex = 0;
-        function updateParagraph() {
-            const randomIndex = Math.floor(Math.random() * phrases.length);
-            loadingHint.textContent = phrases[randomIndex];
-        }
-        updateParagraph();
-        setInterval(updateParagraph, 10000);
+        // let textIndex = 0;
+        // function updateParagraph() {
+        //     const randomIndex = Math.floor(Math.random() * phrases.length);
+        //     loadingHint.textContent = phrases[randomIndex];
+        // }
+        // updateParagraph();
+        // setInterval(updateParagraph, 10000);
 
-        // Animating character
-        let charactedIndex = 0;
-        function updateCharacterSprites() {
-            characterSprites.forEach((sprite) => (sprite.style.display = 'none'));
-            characterSprites[charactedIndex].style.display = 'block';
-            charactedIndex = (charactedIndex + 1) % characterSprites.length;
-        }
-        setInterval(updateCharacterSprites, 250);
+        // // Animating character
+        // let charactedIndex = 0;
+        // function updateCharacterSprites() {
+        //     characterSprites.forEach((sprite) => (sprite.style.display = 'none'));
+        //     characterSprites[charactedIndex].style.display = 'block';
+        //     charactedIndex = (charactedIndex + 1) % characterSprites.length;
+        // }
+        // setInterval(updateCharacterSprites, 250);
 
         // Animating loading text
         let loadingTextIndex = 0;
@@ -227,18 +215,17 @@
             canvas.style.height = "100%";
         }
 
+        loadingBar.style.display = "block";
         var myGameInstance = null;
         var unityInstance = null;
         var script = document.createElement("script");
         script.src = loaderUrl;
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
             }).then((instance) => {
                 myGameInstance = instance;
                 unityInstance = instance;
-
-                // loadingTextSprites.forEach((sprite) => (sprite.style.display = 'none'));
-                // clearInterval(loadTextInterval);
             }).catch((message) => {
                 alert(message);
             });
