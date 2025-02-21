@@ -21,10 +21,12 @@
             debugBannerType: "RewardedVideo"
         });
     </script>
-    
+
+    <script src="https://static.sonartech.io/lib/1.0.0/sonar.js?appId=app_ae25b59e"></script>
+
     <!-- Ton initialization -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script> 
+    <script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script>
 
     <!-- Analytics initialization -->
     <script>
@@ -79,11 +81,12 @@
 </head>
 
 <!-- Loading screen body -->
+
 <body>
     <div id="unity-container" class="unity-desktop">
         <canvas id="unity-canvas" tabindex="-1"></canvas>
     </div>
-    <div id="custom-overlay"> 
+    <div id="custom-overlay">
         <img id="back-image" src="TemplateData/LoadingScreen/Cover.png">
         <div id="unity-loading-bar">
             <img id="unity-progress-bar-empty" src="TemplateData/LoadingScreen/SLOT.png">
