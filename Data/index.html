@@ -233,6 +233,7 @@
             }).then((instance) => {
                 myGameInstance = instance;
                 unityInstance = instance;
+                window.Telegram.WebApp.enableClosingConfirmation();
             }).catch((message) => {
                 alert(message);
             });
@@ -240,5 +241,4 @@
         document.body.appendChild(script);
     </script>
 </body>
-
 </html>
