@@ -10,6 +10,33 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
 
+    <!-- Logs -->
+    <script>
+        (function () {
+        const buf = [];
+        const push = (lvl, msg) => buf.push({ t: Date.now(), lvl, msg: String(msg) });
+
+        const orig = { log: console.log, warn: console.warn, error: console.error };
+        console.log = (...a)=>{ push('log', a.join(' ')); orig.log.apply(console,a); };
+        console.warn = (...a)=>{ push('warn', a.join(' ')); orig.warn.apply(console,a); };
+        console.error = (...a)=>{ push('error', a.join(' ')); orig.error.apply(console,a); };
+
+        window.addEventListener('error', e=>{
+            push('js_error', `${e.message} @ ${e.filename}:${e.lineno}:${e.colno}\n${e.error?.stack||''}`);
+        });
+        window.addEventListener('unhandledrejection', e=>{
+            const r=e.reason; push('unhandled', (r && (r.stack||r.message||String(r))) || 'unhandledrejection');
+        });
+
+        window.__logbuf = buf;
+        window.__drainLogbuf = function (takeAll=true) {
+            const copy = buf.slice();
+            if (takeAll) buf.length = 0;
+            return copy;
+        };
+        })();
+    </script>
+
     <!-- Socket server init -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.js"></script>
     <script src="TemplateData/WallgramShowcaseLib.js"></script>
@@ -47,6 +74,14 @@
             Taddy.init('04c69dc8d17b1bc580cec0f9e5fc74f2');
             Taddy.ready()
         };
+    </script>
+
+    <script src="https://w.tads.me/widget.js"></script>
+    <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            const adexiumWidget = new AdexiumWidget({wid: 'a7960b82-ffbc-4281-acc0-283e190c2ee3', adFormat: 'interstitial'});
+        });
     </script>
 
     <!-- Ton initialization -->
@@ -131,14 +166,87 @@
         display: flex; align-items: center; justify-content: center;
         z-index: 9999;
     }
+    #log-dl-btn {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10000;
+
+        display: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+
+        background: #222;
+        color: #fff;
+        opacity: 0.95;
+        cursor: pointer;
+    }
+
+    #log-dl-btn:hover {
+        background: #333;
+    }
+
+    #log-dl-btn[disabled] {
+        opacity: 0.4;
+        pointer-events: none;
+    }
     </style>
 </head>
 
 <!-- Loading screen body -->
-
 <body>
+    <div id="tads-container-692"></div>
     <div id="rotate-overlay"></div>
     <script>
+    var stuckTimer = null;
+
+    function armStuckTimer(){
+    if (stuckTimer) clearTimeout(stuckTimer);
+    stuckTimer = setTimeout(()=>{
+        if (!loadFinished) {
+        }
+    }, 35000);
+    }
+
+    function triggerDownloadLogs(){
+        try {
+            if (window.unityInstance) {
+            window.unityInstance.SendMessage('LogDownload', 'OnDownloadLogsClicked'); 
+            return;
+            }
+        } catch(e) { }
+        downloadJsOnlyLogsFallback();
+    }
+
+    function downloadJsOnlyLogsFallback(){
+        try {
+            const arr = (window.__drainLogbuf && window.__drainLogbuf(false)) || [];
+            let out = '# JS early logs (fallback only)\n';
+            for (const it of arr){
+            const d = new Date(it.t || Date.now()).toISOString();
+            out += `[${d}] [js_${it.lvl||'log'}] ${String(it.msg||'')}\n`;
+            }
+            saveTextFile(`logs_${new Date().toISOString().replace(/[:.]/g,'-')}.log`, out);
+        } catch(e){
+            alert('Не удалось собрать логи (fallback).');
+        }
+    }
+
+    function saveTextFile(name, text){
+        const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    }
+    armStuckTimer();
+
     window.addEventListener('DOMContentLoaded', () => {
         if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
@@ -195,6 +303,7 @@
             <img class="loading-text-sprite" src="TemplateData/LoadingScreen/LOADING_3.png">
         </div>
     </div>
+    <button id="log-dl-btn" style="display:none;">Download logs</button>
     <div id="7ac05abb15313bb124459ba8bf63b69d87aa49e0"></div>
     <!-- Script part -->
     <script>
@@ -325,16 +434,19 @@
 
         // Starting build
         var buildUrl = "Build";
-        var loaderUrl = buildUrl + "/d39f51e52c3ffa19ef1af6e121fd32db.loader.js";
+        var loaderUrl = buildUrl + "/ee2f545752400b3f3cdf7c52c0c70360.loader.js";
         var config = {
-            dataUrl: buildUrl + "/adefad641c3ef1fb7cf71b510be100ab.data.br",
-            frameworkUrl: buildUrl + "/6c7b9546a1c4e36ea0c2ce72e476c74d.framework.js.br",
-            codeUrl: buildUrl + "/44716d38537500d54b81cc18047e3066.wasm.br",
+            dataUrl: buildUrl + "/f9a6efdde9f502bcbc1a3d5ded196808.data.br",
+            frameworkUrl: buildUrl + "/53ae85a1e68e6d5997af921552aaf5b1.framework.js.br",
+            codeUrl: buildUrl + "/4cbb925197e5ce669549ce5d5df3c86f.wasm.br",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
             productName: "motchi",
             productVersion: "1.0",
         };
+
+        config.print = (t) => { console.log("[U-PRINT]", t); };
+        config.printErr = (t) => { console.error("[U-ERROR]", t); };
 
         if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
             container.className = "unity-mobile";
@@ -405,11 +517,14 @@
                         let sceneLoadTimeSec = (finishTime - (downloadEndTime || overallStartTime)) / 1000;
                         // GA: логируем время загрузки сцены
                         GameAnalytics("addDesignEvent", "SceneLoadTime", sceneLoadTimeSec);
+
+                        if (stuckTimer) clearTimeout(stuckTimer);
                     }
             }).then((instance) => {
                 myGameInstance = instance;
                 unityInstance = instance;
                 window.Telegram.WebApp.enableClosingConfirmation();
+                if (stuckTimer) clearTimeout(stuckTimer);
             }).catch((message) => {
                 alert(message);
             });
