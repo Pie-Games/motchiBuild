@@ -77,10 +77,21 @@
     </script>
 
     <script src="https://w.tads.me/widget.js"></script>
-    <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
+    <script type="text/javascript" src="https://cdn.tgads.space/assets/js/tg-ads-co-widget.min.js"></script>
     <script type="text/javascript">
+        window.TADS_WIDGET_ID = '692';
+        window.ADEXIUM_WIDGET_ID = 'a7960b82-ffbc-4281-acc0-283e190c2ee3';
+        window.ADEXIUM_DEBUG = false;
+
         document.addEventListener('DOMContentLoaded', () => {
-            const adexiumWidget = new AdexiumWidget({wid: 'a7960b82-ffbc-4281-acc0-283e190c2ee3', adFormat: 'interstitial'});
+            if (window.AdexiumWidget) {
+                try {
+                    const adexiumWidget = new AdexiumWidget({wid: window.ADEXIUM_WIDGET_ID, adFormat: 'interstitial', debug: window.ADEXIUM_DEBUG});
+                    window.__adexiumPreInit = adexiumWidget;
+                } catch (e) {
+                    console.error('[Adexium Init] Failed to create AdexiumWidget instance:', e);
+                }
+            }
         });
     </script>
 
@@ -201,16 +212,22 @@
 <body>
     <div id="tads-container-692"></div>
     <div id="rotate-overlay"></div>
+    <button id="log-dl-btn" style="display:none;">Download logs</button>
     <script>
+    var logBtn = document.getElementById('log-dl-btn');
     var stuckTimer = null;
 
     function armStuckTimer(){
     if (stuckTimer) clearTimeout(stuckTimer);
     stuckTimer = setTimeout(()=>{
         if (!loadFinished) {
+        logBtn.style.display = 'block';
+        logBtn.disabled = false;
         }
     }, 35000);
     }
+
+    logBtn.addEventListener('click', triggerDownloadLogs);
 
     function triggerDownloadLogs(){
         try {
@@ -303,7 +320,6 @@
             <img class="loading-text-sprite" src="TemplateData/LoadingScreen/LOADING_3.png">
         </div>
     </div>
-    <button id="log-dl-btn" style="display:none;">Download logs</button>
     <div id="7ac05abb15313bb124459ba8bf63b69d87aa49e0"></div>
     <!-- Script part -->
     <script>
@@ -436,8 +452,8 @@
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/ee2f545752400b3f3cdf7c52c0c70360.loader.js";
         var config = {
-            dataUrl: buildUrl + "/f9a6efdde9f502bcbc1a3d5ded196808.data.br",
-            frameworkUrl: buildUrl + "/53ae85a1e68e6d5997af921552aaf5b1.framework.js.br",
+            dataUrl: buildUrl + "/b0d88c0de5ce849909ea60218e884c41.data.br",
+            frameworkUrl: buildUrl + "/45194168a30e37fcd7962338578c127c.framework.js.br",
             codeUrl: buildUrl + "/4cbb925197e5ce669549ce5d5df3c86f.wasm.br",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
@@ -519,12 +535,16 @@
                         GameAnalytics("addDesignEvent", "SceneLoadTime", sceneLoadTimeSec);
 
                         if (stuckTimer) clearTimeout(stuckTimer);
+                        logBtn.disabled = true;
+                        logBtn.style.display = 'none';
                     }
             }).then((instance) => {
                 myGameInstance = instance;
                 unityInstance = instance;
                 window.Telegram.WebApp.enableClosingConfirmation();
                 if (stuckTimer) clearTimeout(stuckTimer);
+                logBtn.disabled = true;
+                logBtn.style.display = 'none';
             }).catch((message) => {
                 alert(message);
             });
